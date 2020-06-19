@@ -4,7 +4,13 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            @if(Session('flash'))
+            <div class="alert alert-danger" role="alert">
+                <strong>AVISO: ¡Imposible Modificar!     </strong>{{Session('flash')}}  
+            </div>
+            @endif
             <div class="card-deck">
+            
                 <div class ="card">
                     <div class="card-header">Dashboard</div>
                         <div class="card-body">
@@ -15,7 +21,7 @@
                             @endif
                             You are logged in!
                         </div>
-                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">Numero de Clientes</div>
                     <div class="card-body">

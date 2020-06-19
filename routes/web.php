@@ -27,6 +27,8 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::post('/users/edit/{id}', 'UsersController@update')->name('users.update');
 
+    Route::post('/users/password/{id}', 'UsersController@password')->name('users.password');
+
     Route::post('import-list-excel', 'ClientsController@importExcel')->name('clients.import.excel');
 
     Route::get('export-pagos-excel', 'PagosController@exportExcel')->name('pagos.excel');
