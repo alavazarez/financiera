@@ -122,7 +122,7 @@ class ClientsController extends Controller
             $prestamo->delete();
         }
         $client->delete();
-        
+
         return $client;
     }
 

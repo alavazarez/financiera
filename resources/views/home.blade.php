@@ -19,7 +19,7 @@
                                     {{ session('status') }}
                                 </div>
                             @endif
-                            You are logged in!
+                            BIENVENIDO!
                         </div>
                 </div>
                 <div class="card">

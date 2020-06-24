@@ -64,16 +64,21 @@ class PrestamosController extends Controller
         do
         {
             $Day = $Next->dayOfWeek;
-            if($Day != 6)
+            if($Day == 6)
+            {
+                $dateAdd = $datefinish->addDays(2);
+            }
+            else if($Day == 0)
+            {
+                $Next = $datefinish->addDay();
+            }
+            else
             {
                 $dateAdd = $datefinish->addDay();
                 $j++;
             }
-            else
-            {
-                $dateAdd = $datefinish->addDays(2);
-            }
         }while($j<$n);
+
         $prestamo = new Prestamo();
         $prestamo->client_id = $request->input('name');
         $prestamo->cantidad = $request->input('cantidad');
@@ -231,15 +236,16 @@ class PrestamosController extends Controller
 
     public function abonar(Request $request, $id)
     {
-        $prestamo = Prestamo::with('pagos')->findOrFail($id);
+        $pagos = Pago::where('prestamo_id',$id)->orderBy('number')->get();
+        
         $i=0;
-        $size = $prestamo->pagos->count();
-        $cuota = $prestamo->pagos[$i]->cantidad;
+        $size = $pagos->count();
+        $cuota = $pagos[$i]->cantidad;
         $abonarInput= $request->abonar;
         $date = Carbon::now()->format('Y-m-d H:i:s');
         do
         {
-            $abonado = $prestamo->pagos[$i]->abono;//obtiene el valor abonado en la posicion X
+            $abonado = $pagos[$i]->abono;//obtiene el valor abonado en la posicion X
             if($abonado == $cuota)
             {
                 $i++;
@@ -249,16 +255,16 @@ class PrestamosController extends Controller
                 $abonarInput= $abonado + $abonarInput;
                 if($abonarInput <= $cuota)
                 {
-                    $prestamo->pagos[$i]->abono = $abonarInput;
-                    $prestamo->pagos[$i]->fechaAbono = $date;
-                    $prestamo->pagos[$i]->save();
+                    $pagos[$i]->abono = $abonarInput;
+                    $pagos[$i]->fechaAbono = $date;
+                    $pagos[$i]->save();
                     $i=$size;
                 }
                 else if($abonarInput > $cuota)
                 {
-                    $prestamo->pagos[$i]->abono = $cuota;
-                    $prestamo->pagos[$i]->fechaAbono = $date;
-                    $prestamo->pagos[$i]->save();
+                    $pagos[$i]->abono = $cuota;
+                    $pagos[$i]->fechaAbono = $date;
+                    $pagos[$i]->save();
                     $abonarInput = $abonarInput - $cuota;
                     $i++;
                 }

@@ -42,8 +42,6 @@ class Prestamo extends Model
         $Resta = $Total - $this->PrestamoAbonado;
         return $Resta;
     }
-
-    
 }
 
 
