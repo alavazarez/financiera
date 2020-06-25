@@ -7,11 +7,11 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h3 class="mb-0">{{ __('Modify Loan') }}</h3>
+                        <h3 class="mb-0">{{ __('Modificar Prestamo') }}</h3>
                     </div>
                     <div>
                         <a href="{{ route('prestamos.index') }}" class ="btn btn-danger">
-                            {{ __('Cancel')}}
+                            {{ __('Cancelar')}}
                         </a>
                     </div>
                 </div>
@@ -21,13 +21,13 @@
                 @csrf
                     <div class="form-group form-row">
                         <div class="col-md-8">
-                            <label for ="client_id">{{ __('client_id') }}</label>
+                            <label for ="client_id">{{ __('Cliente') }}</label>
                             <!-- <select name ="name" id="id" class="form-control">
                                 @foreach ($clients as $client)
                                     <option value ="{{ $client['id'] }}">{{ $client['name'] }}</option>
                                 @endforeach 
                                 </select> -->
-                                <input name ="client_id" id="client_id" value="{{ $prestamo->client_id }}" class="form-control"></input>
+                                <input name ="client_id" id="client_id" value="{{ $prestamo->client->name }}" readonly="readonly" class="form-control"></input>
                         </div>
                         <div class="col-md-4">
                             <label for ="cantidad">{{ __('Cantidad') }}</label>
@@ -62,7 +62,7 @@
                     <div class="form-group form-row">
                         <div class="col-md-6">
                             <label for ="fechaMinistracion">{{ __('Fecha de Ministracion') }}</label>
-                            <input type="datetime" name ="fechaMinistracion" id="fechaMinistracion" value="{{ $prestamo->fechaMinistracion }}" readonly="readonly" class="form-control @error('fechaMinistracion') is-invalid @enderror">
+                            <input type="date" name ="fechaMinistracion" id="fechaMinistracion" value="{{ $prestamo->fechaMinistracion }}" readonly="readonly" class="form-control @error('fechaMinistracion') is-invalid @enderror">
                             @error('fechaMinistracion')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -71,7 +71,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for ="fechaVencimiento">{{ __('Fecha de vencimiento') }}</label>
-                            <input type="text" name ="fechaVencimiento" id="fechaVencimiento" value="{{ $prestamo->fechaVencimiento }}" readonly="readonly" class="form-control @error('fechaVencimiento') is-invalid @enderror">
+                            <input type="date" name ="fechaVencimiento" id="fechaVencimiento" value="{{ $prestamo->fechaVencimiento }}" readonly="readonly" class="form-control @error('fechaVencimiento') is-invalid @enderror">
                             @error('fechaVencimiento')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -80,11 +80,27 @@
                         </div>
                     </div> 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success btn-lg">{{ __('Modify') }}</button>
+                        <button type="submit" class="btn btn-success btn-lg">{{ __('Actualizar') }}</button>
                     </div>    
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script>
+    var noCuotas;
+    var quantity;
+    var pago;
+    $('#noPagos').change(function(){
+        noCuotas = $(this).val();
+        var date = $("#fechaMinistracion").val();
+        var realDate = moment(date, 'YYYY-MM-DD').businessAdd(noCuotas)._d
+        $("#fechaVencimiento").val(moment(realDate).format("YYYY-MM-DD"));
+    });
+    $("#fechaMinistracion").change(function(){
+        var date = $("#fechaMinistracion").val();
+        var realDate = moment(date, 'YYYY-MM-DD').businessAdd(noCuotas)._d
+        $("#fechaVencimiento").val(moment(realDate).format("YYYY-MM-DD"));
+    });
+</script>
 @endsection

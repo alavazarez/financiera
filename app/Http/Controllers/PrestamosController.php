@@ -19,7 +19,7 @@ class PrestamosController extends Controller
      */
     public function index()
     {
-        $prestamos=Prestamo::with('client')->get();
+        $prestamos=Prestamo::with('client')->orderBy('id')->get();
         return view('prestamos.index', [
             'prestamos' => $prestamos,
         ]); 
@@ -49,35 +49,37 @@ class PrestamosController extends Controller
             'cantidad' => 'required',
             'noPagos' => 'required',
             'cuota' => 'required',
-            //'fechaMinistracion' => 'required',
+            'fechaMinistracion' => 'required',
             //'fechaVencimiento' => 'required',
         ]);
 
-        $date = Carbon::now();
-        //$date = $date->format('Y-m-d');
-
+        $date = $request->input('fechaMinistracion');
         $n = $request->input('noPagos');
         $m = $request->input('cuota');
-        $datefinish = Carbon::now();
+        $datefinish = Carbon::parse($date);
         $j = 1;
-        $Next = $datefinish->addDay();
+        $dateAdd = $datefinish->addDay();
         do
         {
-            $Day = $Next->dayOfWeek;
+            $Day = $dateAdd->dayOfWeek;
             if($Day == 6)
             {
                 $dateAdd = $datefinish->addDays(2);
             }
             else if($Day == 0)
             {
-                $Next = $datefinish->addDay();
+                $dateAdd = $datefinish->addDay();
             }
             else
             {
-                $dateAdd = $datefinish->addDay();
                 $j++;
+                $dateAdd = $datefinish->addDay();
             }
         }while($j<$n);
+
+        $DayFinish = $dateAdd->dayOfWeek;
+        if($DayFinish == 6)
+        $dateAdd = $datefinish->addDays(2);
 
         $prestamo = new Prestamo();
         $prestamo->client_id = $request->input('name');
@@ -91,7 +93,7 @@ class PrestamosController extends Controller
 
         $i = 1;
         do
-        {   
+        {   $date = Carbon::parse($date);
             $dayNext = $date->addDay();
             $dateDay = $dayNext->dayOfWeek;
             if($dateDay != 0 && $dateDay != 6)
@@ -207,7 +209,7 @@ class PrestamosController extends Controller
             {
                 $firstRegistro = $prestamo->pagos->first();             //Obtengo el primer registro de pagos
                 $firstNoPago = $firstRegistro->number;                  //Obtengo el primer numero de pago del registro de arriba
-                for($k=$NewNoPago; $k<$lastNoPago-1; $k++)                //Indicador de la posicion
+                for($k=$NewNoPago; $k<$lastNoPago; $k++)                //Indicador de la posicion
                 {
                     $prestamo->pagos[$k]->delete();
                 }                                      

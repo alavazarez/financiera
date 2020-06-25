@@ -55,7 +55,6 @@ class PagosController extends Controller
      */
     public function show($id)
     {   
-        //->orderBy('number')->get();
         $prestamos = Prestamo::with('pagos','client')->findOrFail($id);
         return view('pagos.show', ['prestamos'=>$prestamos]);
     }

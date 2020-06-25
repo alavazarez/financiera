@@ -58,10 +58,10 @@
                             @enderror
                         </div>
                     </div>
-                    <!-- <div class="form-group form-row">
+                    <div class="form-group form-row">
                         <div class="col-md-6">
                             <label for ="fechaMinistracion">{{ __('Fecha de Ministracion') }}</label>
-                            <input type="datetime" name ="fechaMinistracion" id="fechaMinistracion" class="form-control @error('fechaMinistracion') is-invalid @enderror">
+                            <input type="date" name ="fechaMinistracion" id="fechaMinistracion" class="form-control @error('fechaMinistracion') is-invalid @enderror">
                             @error('fechaMinistracion')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -70,14 +70,14 @@
                         </div>
                         <div class="col-md-6">
                             <label for ="fechaVencimiento">{{ __('Fecha de vencimiento') }}</label>
-                            <input type="text" name ="fechaVencimiento" id="fechaVencimiento" class="form-control @error('fechaVencimiento') is-invalid @enderror">
+                            <input type="date" name ="fechaVencimiento" id="fechaVencimiento" class="form-control @error('fechaVencimiento') is-invalid @enderror">
                             @error('fechaVencimiento')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
                         </div>
-                    </div>  -->
+                    </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-success btn-lg">{{ __('Create') }}</button>
                     </div>
@@ -86,4 +86,21 @@
         </div>
     </div>
 </div>
+<script>
+    var noCuotas;
+    var quantity;
+    var pago;
+    $('#noPagos').change(function(){
+        noCuotas = $(this).val();
+        var date = $("#fechaMinistracion").val();
+        var realDate = moment(date, 'YYYY-MM-DD').businessAdd(noCuotas)._d
+        $("#fechaVencimiento").val(moment(realDate).format("YYYY-MM-DD"));
+    });
+    $("#fechaMinistracion").change(function(){
+        var date = $("#fechaMinistracion").val();
+        var realDate = moment(date, 'YYYY-MM-DD').businessAdd(noCuotas)._d
+        $("#fechaVencimiento").val(moment(realDate).format("YYYY-MM-DD"));
+    });
+</script>
 @endsection
+

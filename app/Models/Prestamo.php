@@ -23,7 +23,7 @@ class Prestamo extends Model
 
     public function pagos()
     {
-        return $this->hasMany('App\Models\Pago');
+        return $this->hasMany('App\Models\Pago')->orderBy('number');
     }
 
     public function getPagosRealizadosAttribute()
